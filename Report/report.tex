@@ -14,6 +14,7 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{float}
+\usepackage{amsfonts}
 \graphicspath{ {./img/} }
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
@@ -144,6 +145,220 @@ By implementing the ideas and algorithms proposed in this paper we were able to 
 The ultimate goal of this activity was to research the possibility of extending the framework (given for 1/f processes) of this paper to f-ARIMA processes.
 
 \subsection{Outline of the paper}
+
+The paper can be summarized in 4 parts: A background on concepts involved, Problem Formulation \& Iterative Algorithm, Verification \& Signal Reconstruction,and Simulations \& Results.
+\subsubsection{Background}
+The paper discusses the lack of research on 1/f processes and their parameterization. $1/f$ processes are described in the first part of this report. The problem is to find the best estimate for $\gamma$ for a given $1/f$ signal if embedded in a Gaussian White Noise. \\
+The suggested algorithm uses wavelet decomposition to convert the problem in Wavelet Domain. A section of the paper is devoted to the definition of Orthonormal Wavelet Decomposition of Signals. The paper generally uses Daubechies-5 wavelet for most of the simulations. The proposed algorithm uses the the wavelet-based Karhunen-Loéve (KL)-like expansions for 1/f processes. It is shown that one can construct a class of nearly $1 /f$ processes using wavelet expansions in terms of uncorrelated transform coefficients having the variance progression:
+$$var\ x_n^m = \sigma^22^{-\gamma m}$$
+
+where $\gamma$ is the exponent of the nearly $1/f$ spectrum, and $\sigma^2$ is a positive constant proportional to $\sigma_x^2$.
+
+\subsubsection{Problem Formulation \& Algorithm}
+
+Let us suppose we have observations $r(t)$ of a zero mean Gaussian $1/f$ process $x(t)$ embedded in zero-mean additive stationary white Gaussian noise $w(t)$ that is statistically independent of $x(t)$.
+
+$$r(t) = x(t) + w(t)\qquad -\infty<t<\infty $$
+
+From this data, the Wavelet coefficients are obtained as such:
+$$ r_n^m = \int_{-\infty} ^\infty \psi_n^m(t)r(t)dt.$$
+We use a DWT where the finite set representing all the scales is given by:
+$$\mathfrak{M} = \{ m_1,m_2,\ldots, m_M \} $$
+And at each scale m, the of available coefficients is given by:
+$$\mathfrak{N}(m) = \{ n_1(m),n_2(m),\ldots, n_{N(m)}(m) \} $$
+Hence, the available data is:
+$$r = \{ r_n^m \in \mathfrak{R}\} = \{ r_n^m, m\in \mathfrak{M},n\in \mathfrak{N}(m) \} $$
+Exploiting the wavelet decomposition’s role as a whitening filter for 1/f processes, and using the fact that the wnm are independent of the xnm and are decorrelated for any wavelet basis, the resulting observation coefficients
+$$r_n^m = x_n^m + w_n^m $$
+can be modeled as mutually independent zero-mean, Gaussian random variables with variance
+$$var\ r_n^m = \sigma^2_m =\sigma^2 \beta^{-m} + \sigma^2_w$$
+Where,
+$$\beta = 2^\gamma $$
+Thus, the parameter set defined below is the one that is to be estimated.
+$$\Theta = (\beta , \sigma^2, \sigma^2_w)$$
+
+The likelihood function for the above parameter set is expressed as:
+$$\mathfrak{L}(\Theta) = p_r(r;\ \Theta) = \prod _{m,n\in \mathfrak{R}} \frac{1}{\sqrt[]{2\pi \sigma _m^2}}\ \text{exp} \bigg [-\frac{(r_n^m)^2}{2\sigma^2_m}\bigg]$$
+for which the log-likelihood function is
+$$L(\Theta) = -\frac{1}{2}\sum_{m,n\in \mathfrak{R}}\bigg \{ \frac{1}{\sigma_m^2}(r_n^m)^2+ \text{ln} (2 \pi \sigma_m^2 ) \bigg \}  $$
+Equivalently,
+$$L(\Theta) = -\frac{1}{2}\sum_{m \in \mathfrak{M}}N(m)\bigg \{ \frac{\hat{\sigma_m^2}}{\sigma_m^2}+ \text{ln} (2 \pi \sigma_m^2 ) \bigg \}  $$
+
+Where the M sample variances given by
+$$\hat{\sigma_m^2} = \frac{1}{N(m)} \sum_{n \in \mathfrak{N}(m)}(r_n^m)^2 $$
+summarize the aspects of the data required in the estimation.
+
+\subsubsection{E-M Algorithm}
+In order to estimate $\Theta$, the log likelihood function $L(\Theta)$ needs to be maximized. The paper solves this problem for 3 different cases:  $\sigma_w^2$ :unknown, $\sigma_w^2$ :known and, $\sigma_w^2$ = 0. Here I am just highlighting the first case and showing the steps of the algorithm proposed which effectively achieves the goal of maximizing the function. The detailed proof of the algorithm is given in the Appendix of the paper. Estimates of parameters  $\beta ,\sigma^2, \sigma_w^2$ generated at $l^{th}$ step are denoted as $\hat{\beta}^{(l)} ,\hat{\sigma}^{2(l)}, \hat{\sigma}_w^{2(l)}$. \\
+\underline{\textbf{E step:}} This step reduces to estimating the noise and signal portions of the wavelet coefficient variances at each scale m using current estimates of the parameters.
+$$ S_m^w(\hat{\Theta}^{(l)}) = A_m(\hat{\Theta}^{(l)}) + B_m^w(\hat{\Theta}^{(l)})\hat{\sigma}_m^2 $$
+$$ S_m^x(\hat{\Theta}^{(l)}) = A_m(\hat{\Theta}^{(l)}) + B_m^x(\hat{\Theta}^{(l)})\hat{\sigma}_m^2 $$
+where,
+
+
+$$A_m(\hat{\Theta}^{(l)}) = \frac{\hat{\sigma}_w^{2(l)}\cdot \hat{\sigma}^{2(l)} [\hat{\beta}^{(l)}]^{-m} }{\hat{\sigma}_w^{2(l)} + \hat{\sigma}^{2(l)} [\hat{\beta}^{(l)}]^{-m}} $$
+$$B^w_m(\hat{\Theta}^{(l)}) = \bigg ( \frac{\hat{\sigma}_w^{2(l)}}{\hat{\sigma}_w^{2(l)} + \hat{\sigma}^{2(l)} [\hat{\beta}^{(l)}]^{-m}} \bigg )^2$$
+$$B^x_m(\hat{\Theta}^{(l)}) = \bigg (\frac{\hat{\sigma}^{2(l)} [\hat{\beta}^{(l)}]^{-m} }{\hat{\sigma}_w^{2(l)} + \hat{\sigma}^{2(l)} [\hat{\beta}^{(l)}]^{-m}} \bigg )^2 $$
+\underline{\textbf{M step:}}  This step reduces to using these signal and noise variance estimates to obtain the new parameter estimates.
+
+$$ \hat{\beta}^{(l+1)} \leftarrow \sum_{m \in \mathfrak{M}} C_m N(m)S_m^x (\hat{\Theta}^{(l)}) \beta^m = 0 $$
+$$ \hat{\sigma}^{2(l+1)} = \frac{\sum_{m \in \mathfrak{M}} N(m)S_m^x (\hat{\Theta}^{(l)})[\hat{\beta}^{(l+1)}]^m }{\sum_{m \in \mathfrak{M}} N(m)}$$
+$$ \hat{\sigma}_w^{2(l+1)} = \frac{\sum_{m \in \mathfrak{M}} N(m)S_m^w (\hat{\Theta}^{(l)}) }{\sum_{m \in \mathfrak{M}} N(m)}$$
+where, 
+
+$$C_m \overset{\triangle}{= } \frac{m}{\sum_{m \in \mathfrak{M}} m N(m)} - \frac{1}{\sum_{m \in \mathfrak{M}} N(m)} $$
+This concludes the problem formulation and the algorithm.
+
+\subsubsection{Verification \& Signal Reconstruction}
+The verification part shows the convergence of the algorithm by determining the Cramer-Rao bounds on the obtained estimates. We are omitting this section as it does not contribute towards the implementation of the paper. 
+The second part shows the use of classical estimation theory and the fact that the input signal and the noise are jointly Gaussian and uncorrelated in order to draw an elegant formula to express the most optimal estimate of the 1/f signal as:
+$$ \hat{x}(t) = \sum _{m,n} \hat{x}_n^m \psi_n^m (t) = \sum _{m,n} \bigg [ \frac{\sigma^2 \beta^{-m}}{\sigma^2 \beta^{-m} + \sigma^2_w } \bigg ] r_n^m \psi_n^m (t)$$
+
+\subsection{Simulation and Comparison with Published Results}
+\subsubsection{Implementation in MATLAB :}
+\begin{itemize}
+\item Generate a $1/f$ process $x(t)$, with known parameters $(\gamma, N)$ 
+\item Find signal parameters $(\beta , \sigma^2)$ ; $\beta = 2^\gamma $
+\item Add Gaussian White Noise of known SNR.  ($r(t) = x(t) + w(t)$)
+\item Obtain wavelet coefficients for noisy signal ($r_n^m$)
+\item Feed the variance of coefficients ($\sigma ^2$) of noisy signal in the E-M algorithm 
+\item Obtain estimated signal parameters $$ \hat{\Theta}_{ML} = [\hat{\beta}_{ML}, \hat{\sigma}^2_{ML} , \hat{\sigma}^2_{w, ML}]$$
+\item Establish the effect on estimation error with input parameters:
+\begin{enumerate}
+\item Resolution
+\item Choice of Wavelet basis
+\item SNR
+\end{enumerate}
+\item Reconstruct the original signal using estimated parameters.
+\end{itemize}
+
+\subsubsection{Spectral Density of the Signal.}
+
+\begin{wrapfigure}{r}{8cm}
+\vspace{-15pt}
+\includegraphics[width=8cm]{spectrum.png}
+\caption{Power Spectral Density}
+\vspace{-100pt}
+\end{wrapfigure} 
+
+\underline{\textbf{Comments:}}
+\begin{itemize}
+\item The power spectral density curve was obtained for the generated signal with $\gamma$ = 1 and N = 65536 ($2^{16}$) samples. 
+\item The red curve shows the theoretical decay of a 1/f process on a log-log plot
+\item From the estimated power spectrum, it can be seen that the slope of the input signal closely matches with that of the theoretical curve
+
+\end{itemize}
+\vspace{2 cm}
+
+\subsubsection{Estimation of $\gamma , \sigma^2 $ using linear regression}
+
+\begin{wrapfigure}{r}{8cm}
+\vspace{-15pt}
+\includegraphics[width=8cm]{regression.png}
+\label{fig:regr}
+\caption{Linear fit of K-L expansion}
+\vspace{-30pt}
+%\vspace{-pt}
+\end{wrapfigure} 
+
+\underline{\textbf{Comments:}}
+\begin{itemize}
+\item Fig. \ref{fig:regr} is a log-log plot of the wavelet coefficients of the input signal x(t), versus the scale (m) .
+\item This plot gives us the value of $\gamma, \sigma^2 $ using the relation:
+$$var\ x_n^m = \sigma^22^{-\gamma m}$$
+\item The slope of the linear fit gives $-\gamma$, and the y-intercept gives an estimate of $\sigma^2 $.
+\item An interesting observation while performing simulations shows that the curve is highly non-linear for lower values of $m$ (coarser scales), but is linear for finer scales. As a result of this observation for multiple sample sizes, the linear fit was obtained considering the higher values of $m$ only, i.e. for $m > M/2$. Where M is the highest scale available.
+
+\end{itemize}
+\subsubsection{Absolute Error in estimation of $\gamma$ for varying SNR. (Fig.\ref{fig:gamma_snr})}
+Sample size (N) = 2048; Wavelet Basis = Daubechies 5th order
+
+\begin{figure}[h]
+    \centering
+    \subfloat[Published Results]{{\includegraphics[width=0.46\textwidth]{gam_snr.png} }}%
+   \qquad
+    \subfloat[Our Results]{{\includegraphics[width=0.46\textwidth]{gamma_snr.png} }}%
+    \caption{Error in $\gamma$ with SNR}%
+    \label{fig:gamma_snr}%
+\end{figure}
+
+\underline{\textbf{Comments and Inference:}}
+\begin{itemize}
+\item The error convergence with SNR is seen in both the results. 
+\item An interesting observation is made in our results that the error values we obtained were higher for lower values of $\gamma$ as opposed to the published results. (Possible reasons mentioned in the conclusion) 
+\end{itemize}
+
+\subsubsection{Absolute Error in estimation of $\gamma$ for varying Sample Size (Fig.\ref{fig:gamma_n})}
+SNR = 20 dB; Wavelet Basis = Daubechies 5th order
+
+\begin{figure}[h!]
+    \centering
+    \subfloat[Published Results]{{\includegraphics[width=0.46\textwidth]{gam_n.png} }}%
+   \qquad
+    \subfloat[Our Results]{{\includegraphics[width=0.46\textwidth]{gamma_n.png} }}%
+    \caption{Error in $\gamma$ with Data Length (N)}%
+    \label{fig:gamma_n}%
+\end{figure}
+
+\underline{\textbf{Comments and Inference:}}
+\begin{itemize}
+\item The error convergence with increasing sample size is seen in both the results.
+\item The trend with varying $\gamma$ is also similar in both the results. 
+\item An observation is made in our results that the error values anomalously drop for the data point at N = 1024. (Possible reasons mentioned in the conclusion) 
+\end{itemize}
+
+\subsubsection{Signal Reconstruction (See Fig.\ref{fig:reconst} and Fig. \ref{fig:reconstr_sim})}
+Sample Size = 65536 ; SNR = 0 dB ; Wavelet basis = DB-5; $\gamma$ = 1.67 for published results; \\$\gamma$ = 1 for our results.
+
+\begin{wrapfigure}{r}{8cm}
+\vspace{-10pt}
+\includegraphics[width=8cm]{reconst.png}
+\label{fig:reconst}
+\caption{Published Results of Signal Reconstruction}
+\vspace{-130pt}
+%\vspace{-pt}
+\end{wrapfigure}
+\underline{\textbf{Comments and Inference:}}
+\begin{itemize}
+\item As can be seen in both the results that the reconstructed signal estimate loses a large amount of its high frequency variations in the process of de-noising.
+\item We used values of $\gamma$ = 1 (or close to 1) in all our simulations because of the high deviation from 1/f behaviour at higher or lower values of $\gamma$. This was seen in the linear fitting curve mentioned in \ref{fig:regr}. This is mostly attributed to the signal generating process used by us which is a standard MATLAB function [\textit{dsp.ColoredNoise()}] which is mainly suited for standard values of $\gamma$ only.
+\end{itemize}
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{reconstruction.png}
+\caption{Signal reconstruction from our simulations}
+\label{fig:reconstr_sim}
+\end{figure}
+
+\subsubsection{Additional Results on Effect of Choice of Wavelet Basis (Fig. \ref{fig:gamma_wavelet})}
+
+\begin{figure}[ht]
+    \centering
+    \subfloat[Data Length = 2048]{{\includegraphics[width=0.46\textwidth]{gama_wavelets_2048.png} }}%
+   \qquad
+    \subfloat[Data Length = 2048]{{\includegraphics[width=0.46\textwidth]{gama_wavelets_65536.png} }}%
+    \caption{Error in $\gamma$ with Different Wavelet Basis}%
+    \label{fig:gamma_wavelet}%
+\end{figure}
+
+\underline{\textbf{Comments and Inference:}}
+\begin{itemize}
+\item This data was not published in the paper and was additionally obtained from our simulations for $\gamma$ = 1.
+\item It was generally observed that the error was lower for wavelet basis with higher vanishing moments.
+\item Another interesting observation was made that for certain values of N, different wavelets seemed to perform the best as can be seen for N = 2048, DB-4 has a better error convergence than DB-5. Similar results were seen for other values of N. (Possible reasons explained in conclusion)
+\end{itemize}
+
+\subsection{Conclusion and Future Work}
+\begin{itemize}
+\item The results of the paper were replicated to a good extent. Code snippets can be found in Appendix of the report
+\item The deviations and anomalies, as observed above, can be accounted for by the following explanations:
+\begin{itemize}
+\item We used a MATLAB based signal generator to replicate the 1/f process. This signal did not necessarily have a zero mean. The results published in the paper is for zero-mean signals only. Hence a lot of the anomalies can be accounted for due to this.
+\item The non-zero mean in the signal lead to a greater error in the detail coefficients at coarser scales as was observed in the linear fitting curve.
+\item The results published were an aggregate for Monte Carlo simulations of 64 trials. Our results were published for a signal generated by a  default Random Number Generator in MATLAB. This reduced the room for variations but maintained replicability in multiple runs or re-runs of the simulation.
+\end{itemize}
+\item This implementation can be used a base to extend the algorithm to f-ARIMA processes in future.
+\item The effect of wavelet basis can be studied theoretically to account for the anomalies, as seen in the results 7
+\end{itemize}
 
 \bibliography{report}
 \bibliographystyle{IEEEtran}
