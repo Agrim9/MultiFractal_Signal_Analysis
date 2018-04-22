@@ -65,7 +65,7 @@ In this report we will be primarily dealing with two particular classes of self 
 \subsection{Fractional Brownian Motion (fBm) signal}
 fBm, a generalization of Brownian motion, is a continuous-time Gaussian process BH(t) on [0, T], which starts at zero, has expectation zero for all t in [0, T]​.
 ​Unlike classical Brownian motion, the increments of fBm need not be independent and can be positively or negatively correlated. The degree of correlation is what characterises the process and is captured in the Hurst parameter(H). When H assumes a value lower than 0.5 the increments are negatively correlated and for values above 0.5 they are positively correlated. If H is 0.5 the steps are uncorrelated and hence the fBm becomes a vanilla brownian motion.
-It has the following covariance function [2].:
+It has the following covariance function \cite{DBLP:journals/tit/TewfikK92}:
 $$R_{B_H}(s,t)=E[B_H(s)B_H(t)]=\frac{V_H}{2}(|s|^{2H}+|t|^{2H}+|s-t|^{2H})$$
 where $V_H=var[B_H(1)]=\frac{-\Gamma(2-2H)cos(\pi H)}{\pi H(2H-1)}$
 
@@ -97,7 +97,7 @@ where $k_1$ and $k_2$ satisfy $0 < k_1 \leq k_2 < \infty $
 \section{Extraction of Hurst Parameter in fBm}
 Since the Hurst parameter characterises the fBm, its extraction from a given signal is a problem of great relevance. This has been studied in existing literature. The method discussed in literature is discussed below. We will also be analyzing its shortfalls and domain of applicability.
 
-\subsection{H parameter estimation using PCA Spectrum (Li et al. 2009)}
+\subsection{H parameter estimation using PCA Spectrum (Li et al. 2009) \cite{DBLP:journals/tsp/LiHCZ09}}
 \begin{wrapfigure}{r}{8cm}
 \vspace{-15pt}
 \includegraphics[width=8cm]{Li_1.png}
@@ -134,8 +134,14 @@ Next step is to fit in the y highest eigenvalues against the Hurst parameter of 
 In our assignment we also aimed to study and implement [4] presented by Wornell and Oppenheim. This paper shows a robust, computationally efficient and consistent iterative algorithm to estimate Fractality Parameters (H), ​and variance estimates of 1/f processes using wavelet expansion
 By implementing the ideas and algorithms proposed in this paper we were able to understand the wavelet domain analysis of fractals through implementation. We also aimed at replicating some of the results proposed in the paper and observe and comment on certain parts which the paper did not discuss, such as the effect of choice of wavelet basis on estimates of H.
 
-The ultimate goal of this activity was to research the possibility of extending the framework (given for 1/f processes) of this paper to f-ARIMA processes.
+The ultimate goal of this activity was to research the possibility of extending the framework (given for 1/f processes) of this paper to f-ARIMA processes.\cite{Eigen}
 
+\cite{5447734}
+\cite{4127049}
+\cite{response}
 \subsection{Outline of the paper}
+
+\bibliography{report}
+\bibliographystyle{IEEEtran}
 
 \end{document}	
