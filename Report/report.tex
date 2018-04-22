@@ -113,7 +113,7 @@ A method to estimate the hurst parameter from the PCA eigenspectrum of a FBM sig
 \end{figure}
 
 \subsection{H parameter estimation using Eigenspectrum of Detail coefficients}
-Instead of forming autocovariance matrix of the FBM signal, we first take DWT of the FBM signal. Then we use the detail coefficients (high pass branch) to form the autocovariance. Then we plot the eigenspectrum of the modified autocovariance matrix. However, instead of looking at the slope we look at the y-intercept. We can map the y-intercept (which is nothing but the highest eigenvalue) to the Hurst parameter.
+Instead of forming autocovariance matrix of the FBM signal, we first take DWT of the FBM signal. Then we use the detail coefficients (high pass branch) to form the autocovariance. Then we plot the eigenspectrum of the modified autocovariance matrix in log log scale. However, instead of looking at the slope we look at the y-intercept. We can map the y-intercept (which is nothing but the highest eigenvalue) to the Hurst parameter.
 Now to judge the effectiveness of the method we look at the graph for the PCA spectrum method reported in literature. One can clearly see that separability of the curves have increased in our method. Hence our method is clearly advantageous.
 
 \begin{figure}[H]
@@ -128,20 +128,30 @@ Now to judge the effectiveness of the method we look at the graph for the PCA sp
 \end{wrapfigure} 
 Next step is to fit in the y highest eigenvalues against the Hurst parameter of the signal. A linear fit suffices and gives sufficiently good results, indicating the linear relationship between Hurst parameter and highest eigenvalue.  It is clear from the graph that this method gives a fairly accurate estimate of the Hurst parameter, even for hurst parameters in the range (0,0.5) which could not be obtained accurately via the PCA eigenspectrum method proposed by Li et al.
 \\
+Another Interesting observation was that eigenspectrum is plotted straightaway and not in log log scale, we see a hyperbolic decrease. The paper by H. Tewfik and M. Kim\cite{Eigen} reported a similar hyperbolic decrease, but for the autocorrelation after taking DWT (but not for the eigenvalues). This indicates a deeper connect between eigenspectrum and direct DWT.
+
 \subsubsection{Mathematical analysis of the proposed method}
 \subsubsection{Conclusion and Future Work Possible}
+\begin{itemize}
+	\item Completing the analysis by solving the optimization problem directly and calculating the highest eigen value
+	\item The paper by Li et al \cite{DBLP:journals/tsp/LiHCZ09} presents a elegant proof which connects the discrete KL expansion to the PCA method. The proof however isn't very general and can't be readily applied to other basis functions \cite{5447734}. Li et al, in January 2018, although have replied to the comment and have come up with a stronger proof concerning with Reisez basis and other such tools, and it will be a good exercise to try and generalise it to Haar wavelet \cite{response}.
+	\item Since we are using Detail coefficients here, it makes sense to try and generalize it across the scales via wavelet packet transform. \cite{4127049} by Wang et al also have proposed estimating Hurst parameter using wavelet packet transform instead of DWT. 
+\end{itemize}
 \section{Estimation of Fractality parameters (H \& $\gamma$) for \\1/f processes}
 In our assignment we also aimed to study and implement [4] presented by Wornell and Oppenheim. This paper shows a robust, computationally efficient and consistent iterative algorithm to estimate Fractality Parameters (H), ​and variance estimates of 1/f processes using wavelet expansion
 By implementing the ideas and algorithms proposed in this paper we were able to understand the wavelet domain analysis of fractals through implementation. We also aimed at replicating some of the results proposed in the paper and observe and comment on certain parts which the paper did not discuss, such as the effect of choice of wavelet basis on estimates of H.
 
-The ultimate goal of this activity was to research the possibility of extending the framework (given for 1/f processes) of this paper to f-ARIMA processes.\cite{Eigen}
+The ultimate goal of this activity was to research the possibility of extending the framework (given for 1/f processes) of this paper to f-ARIMA processes.
 
-\cite{5447734}
-\cite{4127049}
-\cite{response}
 \subsection{Outline of the paper}
 
 \bibliography{report}
 \bibliographystyle{IEEEtran}
 
 \end{document}	
+
+%\cite{5447734}
+%\cite{4127049}
+%\cite{response}
+%\cite{Eigen}
+%\cite{DBLP:journals/tsp/WornellO92}
