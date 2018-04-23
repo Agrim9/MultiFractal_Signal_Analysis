@@ -273,13 +273,13 @@ $$ \hat{x}(t) = \sum _{m,n} \hat{x}_n^m \psi_n^m (t) = \sum _{m,n} \bigg [ \frac
 \includegraphics[width=8cm]{regression.png}
 \label{fig:regr}
 \caption{Linear fit of K-L expansion}
-\vspace{-30pt}
+\vspace{-70pt}
 %\vspace{-pt}
 \end{wrapfigure} 
 
 \underline{\textbf{Comments:}}
 \begin{itemize}
-\item Fig. \ref{fig:regr} is a log-log plot of the wavelet coefficients of the input signal x(t), versus the scale (m) .
+\item Fig. 8 is a log-log plot of the wavelet coefficients of the input signal x(t), versus the scale (m) .
 \item This plot gives us the value of $\gamma, \sigma^2 $ using the relation:
 $$var\ x_n^m = \sigma^22^{-\gamma m}$$
 \item The slope of the linear fit gives $-\gamma$, and the y-intercept gives an estimate of $\sigma^2 $.
@@ -323,28 +323,30 @@ SNR = 20 dB; Wavelet Basis = Daubechies 5th order
 \item An observation is made in our results that the error values anomalously drop for the data point at N = 1024. (Possible reasons mentioned in the conclusion) 
 \end{itemize}
 
-\subsubsection{Signal Reconstruction (See Fig.\ref{fig:reconst} and Fig. \ref{fig:reconstr_sim})}
+\subsubsection{Signal Reconstruction (See Fig. 11 and Fig. \ref{fig:reconstr_sim})}
 Sample Size = 65536 ; SNR = 0 dB ; Wavelet basis = DB-5; $\gamma$ = 1.67 for published results; \\$\gamma$ = 1 for our results.
 
-\begin{wrapfigure}{r}{8cm}
-\vspace{-10pt}
-\includegraphics[width=8cm]{reconst.png}
+\begin{wrapfigure}{r}{7cm}
+\vspace{-20pt}
+\includegraphics[width=7cm]{reconst.png}
 \label{fig:reconst}
 \caption{Published Results of Signal Reconstruction}
-\vspace{-130pt}
+\vspace{-180pt}
 %\vspace{-pt}
 \end{wrapfigure}
 \underline{\textbf{Comments and Inference:}}
 \begin{itemize}
 \item As can be seen in both the results that the reconstructed signal estimate loses a large amount of its high frequency variations in the process of de-noising.
-\item We used values of $\gamma$ = 1 (or close to 1) in all our simulations because of the high deviation from 1/f behaviour at higher or lower values of $\gamma$. This was seen in the linear fitting curve mentioned in \ref{fig:regr}. This is mostly attributed to the signal generating process used by us which is a standard MATLAB function [\textit{dsp.ColoredNoise()}] which is mainly suited for standard values of $\gamma$ only.
+\item We used values of $\gamma$ = 1 (or close to 1) in all our simulations because of the high deviation from 1/f behaviour at higher or lower values of $\gamma$. This was seen in the linear fitting curve mentioned in Fig. 8. This is mostly attributed to the signal generating process used by us which is a standard MATLAB function [\textit{dsp.ColoredNoise()}] which is mainly suited for standard values of $\gamma$ only.
 \end{itemize}
+\vspace{4 cm}
 \begin{figure}[ht]
+\centering
 \includegraphics[width=\textwidth]{reconstruction.png}
 \caption{Signal reconstruction from our simulations}
 \label{fig:reconstr_sim}
 \end{figure}
-
+\vspace{10 cm}
 \subsubsection{Additional Results on Effect of Choice of Wavelet Basis (Fig. \ref{fig:gamma_wavelet})}
 
 \begin{figure}[ht]
@@ -386,3 +388,4 @@ Sample Size = 65536 ; SNR = 0 dB ; Wavelet basis = DB-5; $\gamma$ = 1.67 for pub
 %\cite{response}
 %\cite{Eigen}
 %\cite{DBLP:journals/tsp/WornellO92}
+
