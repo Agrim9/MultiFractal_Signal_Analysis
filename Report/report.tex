@@ -70,7 +70,7 @@ It has the following covariance function \cite{DBLP:journals/tit/TewfikK92}:
 $$R_{B_H}(s,t)=E[B_H(s)B_H(t)]=\frac{V_H}{2}(|s|^{2H}+|t|^{2H}+|s-t|^{2H})$$
 where $V_H=var[B_H(1)]=\frac{-\Gamma(2-2H)cos(\pi H)}{\pi H(2H-1)}$
 
-We saw various forms of the covariance functions in [1],[2] and [3]. The most general version is presented above. 
+We saw various forms of the covariance functions in \cite{DBLP:journals/tit/TewfikK92},\cite{DBLP:journals/tsp/LiHCZ09} and \cite{FBM_var}. The most general version is presented above. 
 
 \begin{figure}[h]
   \begin{minipage}[c]{0.6\textwidth}
@@ -123,23 +123,39 @@ Now to judge the effectiveness of the method we look at the graph for the PCA sp
 \end{figure}
 
 \begin{wrapfigure}{r}{7cm}
-\vspace{-15pt}
+\vspace{-30pt}
 \includegraphics[width=7cm]{dwt_lin.png}
 \vspace{-30pt}
 \end{wrapfigure} 
 Next step is to fit in the y highest eigenvalues against the Hurst parameter of the signal. A linear fit suffices and gives sufficiently good results, indicating the linear relationship between Hurst parameter and highest eigenvalue.  It is clear from the graph that this method gives a fairly accurate estimate of the Hurst parameter, even for hurst parameters in the range (0,0.5) which could not be obtained accurately via the PCA eigenspectrum method proposed by Li et al.
 \\
-Another Interesting observation was that eigenspectrum is plotted straightaway and not in log log scale, we see a hyperbolic decrease. The paper by H. Tewfik and M. Kim\cite{Eigen} reported a similar hyperbolic decrease, but for the autocorrelation after taking DWT (but not for the eigenvalues). This indicates a deeper connect between eigenspectrum and direct DWT.
+\\
+\\
 
+\begin{wrapfigure}{l}{7cm}
+\vspace{-30pt}
+\includegraphics[width=7cm]{hyp.png}
+\caption{Hyperbolic decay of eigenvalues\\}
+\vspace{-30pt}
+\end{wrapfigure}
+Another Interesting observation was that when eigenspectrum is plotted straightaway and not in log log scale, we see a hyperbolic decrease. The paper by H. Tewfik and M. Kim\cite{DBLP:journals/tit/TewfikK92} reported a similar hyperbolic decrease, but for the autocorrelation after taking DWT (but not for the eigenvalues). As vanishing moments increase, the hyperbolic decrease is steeper, which was also observed in \cite{DBLP:journals/tit/TewfikK92}. This indicates a deeper connect between eigenspectrum and direct DWT.\\ \\ \\
+
+\pagebreak
 \subsubsection{Mathematical analysis of the proposed method}
-\subsubsection{Conclusion and Future Work Possible}
 \begin{itemize}
-	\item Completing the analysis by solving the optimization problem directly and calculating the highest eigen value
-	\item The paper by Li et al \cite{DBLP:journals/tsp/LiHCZ09} presents a elegant proof which connects the discrete KL expansion to the PCA method. The proof however isn't very general and can't be readily applied to other basis functions \cite{5447734}. Li et al, in January 2018, although have replied to the comment and have come up with a stronger proof concerning with Reisez basis and other such tools, and it will be a good exercise to try and generalise it to Haar wavelet \cite{response}.
+\item Using the fact that the highest eigenvalue($\lambda_1$1) of the Auto covariance matrix with all positive entries is $1+(M-1)\sum_{i=1}^M(p*R(p))$ \cite{Eigen}, mathematical analysis of the results obtained was attempted. To make all the entries in the Auto covariance matrix positive,  $|min_p(R(p))|$ can be added. Hence, the following formula was obtained, from which linearity when plotted in log log scale can be explained.​
+$$\lambda_1 = 1+(M-1)(\frac{1}{\frac{M(M-1)}{2}}\sum_{p=1}^{M-1}pR[p]+|min_{p}(R[p])|)$$
+\item However, to obtain the exact values of slope, we need to solve the minimization problem formally and account in for a more accurate expression for R[0], which has been left as a potential future work.​
+\item Explaining this via Discrete KL Expansion was also attempted, but it did not give fruitful result. Another issue faced was with various forms of R[k]. Using approximations to R[k] results in counterfeit results, and as a future work expression used for R[k] should be improved upon to explain the obtained results completely​
+\end{itemize}
+\subsubsection{Future Work Possible}
+\begin{itemize}
+	\item Completing the analysis by solving the optimization problem directly and calculating the highest eigen value. However, there are 2 issues with this approach, since firstly, in presence of noise, the problem will become probabilistic and may be untrackable, and secondly, the optimization problem may not have a closed form. Moreover, the analysis done will be just for the highest eigenvalue and not for the full spectrum.
+	\item Given the drawbacks of the approaches considered, proving the results using discrete K-L expansion might be the correct way to proceed. The paper by Li et al \cite{DBLP:journals/tsp/LiHCZ09} presented an unusual proof which connects the discrete KL expansion to the PCA method. The proof however isn't very general and can't be readily applied to other basis functions \cite{5447734}. Li et al, in January 2018, although have replied to the comment and have come up with a stronger proof concerning with Reisez basis and other such tools, and it will be a good exercise to try and generalize it to Haar wavelet \cite{response}.
 	\item Since we are using Detail coefficients here, it makes sense to try and generalize it across the scales via wavelet packet transform. \cite{4127049} by Wang et al also have proposed estimating Hurst parameter using wavelet packet transform instead of DWT. 
 \end{itemize}
 \section{Estimation of Fractality parameters (H \& $\gamma$) for \\1/f processes}
-In our assignment we also aimed to study and implement [4] presented by Wornell and Oppenheim. This paper shows a robust, computationally efficient and consistent iterative algorithm to estimate Fractality Parameters (H), ​and variance estimates of 1/f processes using wavelet expansion
+In our assignment we also aimed to study and implement \cite{DBLP:journals/tsp/WornellO92} presented by Wornell and Oppenheim. This paper shows a robust, computationally efficient and consistent iterative algorithm to estimate Fractality Parameters (H), ​and variance estimates of 1/f processes using wavelet expansion
 By implementing the ideas and algorithms proposed in this paper we were able to understand the wavelet domain analysis of fractals through implementation. We also aimed at replicating some of the results proposed in the paper and observe and comment on certain parts which the paper did not discuss, such as the effect of choice of wavelet basis on estimates of H.
 
 The ultimate goal of this activity was to research the possibility of extending the framework (given for 1/f processes) of this paper to f-ARIMA processes.
